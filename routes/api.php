@@ -1,6 +1,6 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,10 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::get('/users', [Controllers\UserController::class,'index']);
+Route::post('/users', [Controllers\UserController::class,'store']);
 
-Route::get('/', function () {
-    return ['user'=>'welcome'];
-});
+Route::post('/order', [Controllers\OrderController::class,'store']);
