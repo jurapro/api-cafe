@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateOrdersTable extends Migration
+class CreateShiftWorkersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,9 @@ class CreateOrdersTable extends Migration
      */
     public function up()
     {
-        Schema::create('orders', function (Blueprint $table) {
+        Schema::create('shift_workers', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 50);
-            $table->string('from', 100);
-            $table->string('to', 100);
-            //$table->foreign('user_id')->references('id')->on('users'); Можно так
+            $table->foreignId('work_shift_id')->constrained();
             $table->foreignId('user_id')->constrained();
             $table->timestamps();
         });
@@ -31,6 +28,6 @@ class CreateOrdersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('orders');
+        Schema::dropIfExists('shift_workers');
     }
 }

@@ -18,8 +18,11 @@ class User extends Authenticatable
 
     protected $fillable = [
         'name',
-        'email',
+        'surname',
+        'patronymic',
+        'login',
         'password',
+        'role_id',
     ];
 
     /**
@@ -43,8 +46,13 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function orders()
+    public function role()
     {
-        return $this->hasMany(Order::class);
+        return $this->belongsTo(Role::class);
+    }
+
+    public function hasRole($role)
+    {
+        return $role === $this->role->code;
     }
 }
