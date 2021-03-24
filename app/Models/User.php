@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
@@ -15,6 +17,7 @@ class User extends Authenticatable
      *
      * @var array
      */
+    protected $appends = ['group'];
 
     protected $fillable = [
         'name',
@@ -31,28 +34,35 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
+        'role',
+        'role_id',
         'password',
         'remember_token',
         'created_at',
         'updated_at',
     ];
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
 
     public function role()
     {
         return $this->belongsTo(Role::class);
     }
 
-    public function hasRole($role)
+    public function generateToken()
     {
-        return $role === $this->role->code;
+        $this->api_token = Hash::make(Str::random());
+        $this->save();
+
+        return $this->api_token;
+    }
+
+    public function hasRole($roles)
+    {
+        return in_array($this->role->code, $roles);
+    }
+
+    public function getGroupAttribute()
+    {
+        return $this->role->name;
     }
 }

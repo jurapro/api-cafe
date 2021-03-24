@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Exceptions\ApiException;
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
@@ -15,11 +16,6 @@ class Authenticate extends Middleware
      */
     protected function redirectTo($request)
     {
-/*        if (!$request->expectsJson()) {
-            return route('login');
-        }*/
-        throw new HttpResponseException(response()->json([
-            'message' => 'Вы не авторизованы'
-        ])->setStatusCode(403, 'You need authorization'));
+        throw new ApiException(403, 'Login failed');
     }
 }

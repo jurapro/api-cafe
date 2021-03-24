@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Exceptions\ApiException;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -11,15 +12,15 @@ class ApiRequest extends FormRequest
 
     protected function failedValidation(Validator $validator)
     {
-        throw new HttpResponseException(response()->json($validator->errors())->setStatusCode(422, 'Validation error'));
+        throw new ApiException(422, 'Validation error', $validator->errors());
     }
 
     public function messages()
     {
         $messages = parent::messages();
         $messages += [
-            'unique' => ':attribute должен быть уникальным',
-            'required'=>'Атрибут :attribute должен быть не пустым'
+            //'unique' => ':attribute должен быть уникальным',
+           // 'required' => 'Атрибут :attribute должен быть не пустым'
         ];
         return $messages;
     }

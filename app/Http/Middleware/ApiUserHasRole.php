@@ -2,11 +2,12 @@
 
 namespace App\Http\Middleware;
 
+use App\Exceptions\ApiException;
 use Closure;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
 
-class EnsureUserHasRole
+class ApiUserHasRole
 {
     /**
      * Handle an incoming request.
@@ -17,10 +18,8 @@ class EnsureUserHasRole
      */
     public function handle(Request $request, Closure $next, $role)
     {
-        if (! $request->user()->hasRole($role)) {
-            throw new HttpResponseException(response()->json([
-                'message' => 'У вас нет прав'
-            ])->setStatusCode(403, 'You have no rights'));
+        if (!$request->user()->hasRole(explode('|', $role))) {
+            throw new ApiException(403, 'Forbidden for you');
         }
         return $next($request);
     }
