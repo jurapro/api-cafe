@@ -14,12 +14,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/user', [Controllers\UserController::class, 'index']);
+/*;
 Route::post('/user', [Controllers\UserController::class, 'store'])
-    ->middleware(['auth:api','role:admin']);
+    ->middleware(['auth:api','role:admin']);*/
 
 /*Route::middleware('auth:api')
     ->resource('order', Controllers\OrderController::class, ['only' => ['store', 'index']]);
 
 Route::get('/order/{order}', [Controllers\OrderController::class, 'show']);*/
 
+
+Route::post('/login', [Controllers\UserController::class, 'login']);
+Route::middleware(['auth:api', 'role:admin'])
+    ->get('/user', [Controllers\UserController::class, 'index']);
