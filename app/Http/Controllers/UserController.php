@@ -66,7 +66,14 @@ class UserController extends Controller
         if ($user->status==='fired')  {
             throw new ApiException(403, 'Forbidden. The user is already fired!');
         }
-        return new UserResource($user->toDismiss());
+        $user->toDismiss();
+
+        return response()->json([
+            'data' => [
+                'id'=>$user->id,
+                'status'=>'fired'
+            ]
+        ])->setStatusCode(200, 'OK');
     }
 
 

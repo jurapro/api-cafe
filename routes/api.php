@@ -23,7 +23,9 @@ Route::middleware(['auth:api', 'role:admin'])
         Route::get('/user/{user}/to-dismiss', [Controllers\UserController::class, 'toDismiss']);
 
         Route::apiResource('work-shift', Controllers\WorkShiftController::class, ['only' => ['index', 'store', 'show']]);
-        Route::get('/work-shift/{id}/open', [Controllers\WorkShiftController::class, 'open']);
-        Route::get('/work-shift/{id}/close', [Controllers\WorkShiftController::class, 'close']);
+        Route::get('/work-shift/{workShift}/open', [Controllers\WorkShiftController::class, 'open']);
+        Route::get('/work-shift/{workShift}/close', [Controllers\WorkShiftController::class, 'close']);
+        Route::post('/work-shift/{workShift}/user', [Controllers\WorkShiftController::class, 'addUser']);
+        Route::delete('/work-shift/{workShift}/user/{user}', [Controllers\WorkShiftController::class, 'removeUser']);
     });
 

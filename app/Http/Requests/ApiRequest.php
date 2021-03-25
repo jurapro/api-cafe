@@ -19,8 +19,7 @@ class ApiRequest extends FormRequest
     {
         $messages = parent::messages();
         $messages += [
-            //'unique' => ':attribute должен быть уникальным',
-           // 'required' => 'Атрибут :attribute должен быть не пустым'
+            'exists' => ':attribute does not exist'
         ];
         return $messages;
     }

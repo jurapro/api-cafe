@@ -38,4 +38,15 @@ class WorkShift extends Model
         $this->save();
         return $this;
     }
+
+    public function hasUser($id_user)
+    {
+        return $this->workers()->where(['user_id' => $id_user])->exists();
+    }
+
+    public function removeUser($id_user)
+    {
+        $this->workers()->findOrFail($id_user);
+        ShiftWorker::where(['user_id' => $id_user, 'work_shift_id' => $this->id])->delete();
+    }
 }

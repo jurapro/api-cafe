@@ -3,50 +3,34 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\ApiException;
+use App\Http\Requests\ShiftWorkerRequest;
+use App\Http\Requests\UsersArrayRequest;
 use App\Http\Requests\WorkShiftRequest;
 use App\Http\Resources\WorkShiftResource;
+use App\Models\ShiftWorker;
+use App\Models\User;
 use App\Models\WorkShift;
 
 
 class WorkShiftController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return WorkShift[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Http\Response
-     */
     public function index()
     {
         return WorkShift::all();
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(WorkShiftRequest $request)
     {
         return WorkShift::create($request->all());
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     * @return WorkShiftResource
-     */
-    public function show($id)
+    public function show(WorkShift $workShift)
     {
-        $workShift = WorkShift::findOrFail($id);
         return new WorkShiftResource($workShift);
     }
 
-    public function open($id)
+    public function open(WorkShift $workShift)
     {
-        $workShift = WorkShift::findOrFail($id);
-
         if (WorkShift::where(['active' => true])->count()) {
             throw new ApiException(403, 'Forbidden. There are open shifts!');
         }
@@ -54,10 +38,8 @@ class WorkShiftController extends Controller
         return new WorkShiftResource($workShift->open());
     }
 
-    public function close($id)
+    public function close(WorkShift $workShift)
     {
-        $workShift = WorkShift::findOrFail($id);
-
         if (!$workShift->active) {
             throw new ApiException(403, 'Forbidden. The shift is already closed!');
         }
@@ -65,14 +47,36 @@ class WorkShiftController extends Controller
         return new WorkShiftResource($workShift->close());
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
+    public function addUser(WorkShift $workShift, ShiftWorkerRequest $shiftWorkerRequest)
     {
-        //
+        if ($workShift->hasUser($shiftWorkerRequest->user_id)) {
+            throw new ApiException(403, 'Forbidden. The worker is already on shift!');
+        }
+
+        ShiftWorker::create([
+            'work_shift_id' => $workShift->id,
+            'user_id' => $shiftWorkerRequest->user_id
+        ]);
+
+        return response()->json([
+            'data' => [
+                'id_user' => $shiftWorkerRequest->user_id,
+                'status' => 'added'
+            ]
+        ])->setStatusCode(201);
+
+    }
+
+    public function removeUser(WorkShift $workShift, User $user)
+    {
+        $workShift->removeUser($user->id);
+
+        return response()->json([
+            'data' => [
+                'id_user' => $user->id,
+                'status' => 'removed'
+            ]
+        ]);
+
     }
 }
