@@ -10,6 +10,7 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -17,7 +18,6 @@ class UserController extends Controller
 {
     public function login(LoginRequest $request)
     {
-
         if ($user = User::query()->where(['login' => $request->login])->first()
             and Hash::check($request->password, $user->password)) {
             return response()->json([
@@ -30,9 +30,15 @@ class UserController extends Controller
         throw new ApiException(401, 'Authentication failed');
     }
 
+    public function logout()
+    {
+        Auth::user()->logout();
+        return response()->json()->setStatusCode(200, 'OK');
+    }
+
     public function index()
     {
-       return response()->json([
+        return response()->json([
             'data' => User::all(['id', 'name', 'login', 'status', 'role_id'])
         ]);
     }
@@ -40,7 +46,6 @@ class UserController extends Controller
     public function show($id)
     {
         if (!User::find($id)) throw new ApiException(404, 'Not found');
-
         return new UserResource(User::find($id));
     }
 
@@ -56,4 +61,14 @@ class UserController extends Controller
 
         return response()->json(['id' => $user->id])->setStatusCode(201, 'Created');
     }
+
+    public function toDismiss($id)
+    {
+        $user = User::find($id);
+        if (!$user) throw new ApiException(404, 'Not found');
+        $user->status = 'fired';
+        $user->save();
+        return new UserResource($user);
+    }
+
 }

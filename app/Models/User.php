@@ -66,4 +66,10 @@ class User extends Authenticatable
     {
         return $this->role->name;
     }
+
+    public function logout()
+    {
+        $this->api_token = null;
+        $this->save();
+    }
 }

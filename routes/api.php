@@ -15,5 +15,13 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::post('/login', [Controllers\UserController::class, 'login']);
+Route::middleware('auth:api')->get('/logout', [Controllers\UserController::class, 'logout']);
+
 Route::middleware(['auth:api', 'role:admin'])
-    ->apiResource('user', Controllers\UserController::class, ['only' => ['show', 'index','store']]);
+    ->group(function () {
+        Route::apiResource('user', Controllers\UserController::class, ['only' => ['show', 'index', 'store']]);
+        Route::get('/user/{user}/to-dismiss', [Controllers\UserController::class, 'toDismiss']);
+
+        Route::apiResource('work-shift', Controllers\WorkShiftController::class, ['only' => ['index', 'store']]);
+    });
+
