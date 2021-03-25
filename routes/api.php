@@ -22,6 +22,8 @@ Route::middleware(['auth:api', 'role:admin'])
         Route::apiResource('user', Controllers\UserController::class, ['only' => ['show', 'index', 'store']]);
         Route::get('/user/{user}/to-dismiss', [Controllers\UserController::class, 'toDismiss']);
 
-        Route::apiResource('work-shift', Controllers\WorkShiftController::class, ['only' => ['index', 'store']]);
+        Route::apiResource('work-shift', Controllers\WorkShiftController::class, ['only' => ['index', 'store', 'show']]);
+        Route::get('/work-shift/{id}/open', [Controllers\WorkShiftController::class, 'open']);
+        Route::get('/work-shift/{id}/close', [Controllers\WorkShiftController::class, 'close']);
     });
 

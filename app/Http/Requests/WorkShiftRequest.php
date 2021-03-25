@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class WorkShiftRequest extends FormRequest
+class WorkShiftRequest extends ApiRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -14,8 +14,8 @@ class WorkShiftRequest extends FormRequest
     public function rules()
     {
         return [
-            'start' => 'required|date',
-            'end' => 'required|date',
+            'start' => 'required|date_format:Y-m-d H:i|after_or_equal:now',
+            'end' => 'required|date_format:Y-m-d H:i|after:start',
         ];
     }
 }

@@ -14,8 +14,28 @@ class WorkShift extends Model
         'end',
         'active',
     ];
+
     protected $hidden = [
         'created_at',
         'updated_at',
     ];
+
+    public function workers()
+    {
+        return $this->belongsToMany(User::class, 'shift_workers');
+    }
+
+    public function open()
+    {
+        $this->active = true;
+        $this->save();
+        return $this;
+    }
+
+    public function close()
+    {
+        $this->active = false;
+        $this->save();
+        return $this;
+    }
 }

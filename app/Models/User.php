@@ -72,4 +72,11 @@ class User extends Authenticatable
         $this->api_token = null;
         $this->save();
     }
+
+    public function toDismiss()
+    {
+        $this->status = 'fired';
+        $this->save();
+        return $this;
+    }
 }
