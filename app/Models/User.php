@@ -25,6 +25,7 @@ class User extends Authenticatable
         'patronymic',
         'login',
         'password',
+        'photo_file',
         'role_id',
     ];
 
@@ -37,7 +38,7 @@ class User extends Authenticatable
         'role',
         'role_id',
         'password',
-        'remember_token',
+        'api_token',
         'created_at',
         'updated_at',
     ];

@@ -20,7 +20,6 @@ class CreateUsersTable extends Migration
             $table->string('patronymic',100)->nullable();
             $table->string('login')->unique();
             $table->string('password');
-            $table->string('contract_file')->nullable();
             $table->string('photo_file')->nullable();
             $table->string('api_token')->nullable();
             $table->enum('status',['working','fired'])->default('working');
