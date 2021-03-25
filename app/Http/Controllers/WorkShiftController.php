@@ -39,18 +39,13 @@ class WorkShiftController extends Controller
      */
     public function show($id)
     {
-        if (!$workSift = WorkShift::find($id)) {
-            throw new ApiException(404, 'Not found');
-        }
-
-        return new WorkShiftResource($workSift);
+        $workShift = WorkShift::findOrFail($id);
+        return new WorkShiftResource($workShift);
     }
 
     public function open($id)
     {
-        if (!$workShift= WorkShift::find($id)) {
-            throw new ApiException(404, 'Not found');
-        }
+        $workShift = WorkShift::findOrFail($id);
 
         if (WorkShift::where(['active' => true])->count()) {
             throw new ApiException(403, 'Forbidden. There are open shifts!');
@@ -61,12 +56,9 @@ class WorkShiftController extends Controller
 
     public function close($id)
     {
-        $workShift = WorkShift::find($id);
+        $workShift = WorkShift::findOrFail($id);
 
-        if (!$workShift) {
-            throw new ApiException(404, 'Not found');
-        }
-        if (!$workShift->active)  {
+        if (!$workShift->active) {
             throw new ApiException(403, 'Forbidden. The shift is already closed!');
         }
 

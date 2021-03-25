@@ -43,11 +43,8 @@ class UserController extends Controller
         ]);
     }
 
-    public function show($id)
+   public function show(User $user)
     {
-        if (!$user = User::find($id)) {
-            throw new ApiException(404, 'Not found');
-        }
         return new UserResource($user);
     }
 
@@ -64,12 +61,8 @@ class UserController extends Controller
         return response()->json(['id' => $user->id])->setStatusCode(201, 'Created');
     }
 
-    public function toDismiss($id)
+    public function toDismiss(User $user)
     {
-        $user = User::find($id);
-        if (!$user) {
-            throw new ApiException(404, 'Not found');
-        }
         if ($user->status==='fired')  {
             throw new ApiException(403, 'Forbidden. The user is already fired!');
         }
