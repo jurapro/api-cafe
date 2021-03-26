@@ -16,7 +16,8 @@ class CreateOrdersTable extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->integer('number_of_person');
-            $table->foreignId('waiter_table_id')->constrained();
+            $table->foreignId('table_id')->constrained();
+            $table->foreignId('shift_worker_id')->constrained();
             $table->foreignId('status_order_id')->constrained();
             $table->timestamps();
         });
