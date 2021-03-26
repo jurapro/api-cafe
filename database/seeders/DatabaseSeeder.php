@@ -20,7 +20,6 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             MenuCategorySeeder::class,
             MenuSeeder::class,
-            PaymentTypeSeeder::class,
             TableSeeder::class,
             StatusOrderSeeder::class
         ]);
