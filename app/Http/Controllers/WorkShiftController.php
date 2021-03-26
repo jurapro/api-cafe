@@ -6,6 +6,7 @@ use App\Exceptions\ApiException;
 use App\Http\Requests\ShiftWorkerRequest;
 use App\Http\Requests\UsersArrayRequest;
 use App\Http\Requests\WorkShiftRequest;
+use App\Http\Resources\WorkShiftOrdersResource;
 use App\Http\Resources\WorkShiftResource;
 use App\Models\ShiftWorker;
 use App\Models\User;
@@ -78,5 +79,10 @@ class WorkShiftController extends Controller
             ]
         ]);
 
+    }
+
+    public function orders(WorkShift $workShift)
+    {
+        return new WorkShiftOrdersResource($workShift);
     }
 }

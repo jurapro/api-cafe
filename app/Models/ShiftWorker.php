@@ -18,4 +18,18 @@ class ShiftWorker extends Model
         'updated_at',
     ];
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function workShift()
+    {
+        return $this->belongsTo(WorkShift::class);
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
 }

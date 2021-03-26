@@ -29,3 +29,8 @@ Route::middleware(['auth:api', 'role:admin'])
         Route::delete('/work-shift/{workShift}/user/{user}', [Controllers\WorkShiftController::class, 'removeUser']);
     });
 
+Route::middleware(['auth:api', 'role:admin|waiter'])
+    ->group(function () {
+        Route::get('/work-shift/{workShift}/orders', [Controllers\WorkShiftController::class, 'orders']);
+        Route::apiResource('order', Controllers\OrderController::class, ['only' => ['index', 'show']]);
+    });

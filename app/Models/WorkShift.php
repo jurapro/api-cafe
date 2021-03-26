@@ -25,6 +25,11 @@ class WorkShift extends Model
         return $this->belongsToMany(User::class, 'shift_workers');
     }
 
+    public function orders()
+    {
+        return $this->hasManyThrough(Order::class, ShiftWorker::class);
+    }
+
     public function open()
     {
         $this->active = true;
