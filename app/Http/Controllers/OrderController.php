@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exceptions\ApiException;
 use App\Http\Requests\AccessOrderRequest;
+use App\Http\Requests\ChangeStatusRequest;
 use App\Http\Requests\OrderRequest;
 use App\Http\Resources\OrderResource;
 use App\Http\Resources\OrdersDetailResource;
@@ -13,6 +14,8 @@ use App\Models\StatusOrder;
 use App\Models\WorkShift;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class OrderController extends Controller
 {
@@ -51,9 +54,16 @@ class OrderController extends Controller
         return new OrdersDetailResource($order);
     }
 
-    public function update(Request $request, $id)
+    public function changeStatus(Order $order, ChangeStatusRequest $changeStatusRequest)
     {
-        //
+        $order->changeStatus($changeStatusRequest->status);
+
+        return [
+            'data' => [
+                'id' => $order->id,
+                'status' => $changeStatusRequest->status
+            ]
+        ];
     }
 
 }

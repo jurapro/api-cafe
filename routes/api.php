@@ -39,3 +39,8 @@ Route::middleware(['auth:api', 'role:waiter'])
     ->group(function () {
         Route::post('order',  [Controllers\OrderController::class, 'store']);
     });
+
+Route::middleware(['auth:api', 'role:waiter|cook'])
+    ->group(function () {
+        Route::patch('order/{order}',  [Controllers\OrderController::class, 'changeStatus']);
+    });
