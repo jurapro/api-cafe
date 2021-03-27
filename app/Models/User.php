@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
@@ -78,5 +79,10 @@ class User extends Authenticatable
         $this->status = 'fired';
         $this->save();
         return $this;
+    }
+
+    public function getShiftWorker($work_shift_id)
+    {
+        return ShiftWorker::where(['user_id' => $this->id, 'work_shift_id' => $work_shift_id])->first();
     }
 }

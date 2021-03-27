@@ -7,6 +7,7 @@ use App\Http\Requests\FoundRequest;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\UserRequest;
 
+use App\Http\Resources\UserAllResource;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 
@@ -18,8 +19,9 @@ class UserController extends Controller
 {
     public function login(LoginRequest $request)
     {
-        if ($user = User::query()->where(['login' => $request->login])->first()
-            and Hash::check($request->password, $user->password)) {
+        if ($user = User::where(['login' => $request->login])->first()
+            and Hash::check($request->password, $user->password)
+            and $user->status === 'working') {
             return response()->json([
                 'data' => [
                     'user_token' => $user->generateToken()
@@ -33,17 +35,19 @@ class UserController extends Controller
     public function logout()
     {
         Auth::user()->logout();
-        return response()->json()->setStatusCode(200, 'OK');
+        return response()->json([
+            'data' => [
+                'message' => 'logout'
+            ]
+        ]);
     }
 
     public function index()
     {
-        return response()->json([
-            'data' => User::all(['id', 'name', 'login', 'status', 'role_id'])
-        ]);
+        return UserAllResource::collection(User::all());
     }
 
-   public function show(User $user)
+    public function show(User $user)
     {
         return new UserResource($user);
     }
@@ -63,18 +67,17 @@ class UserController extends Controller
 
     public function toDismiss(User $user)
     {
-        if ($user->status==='fired')  {
+        if ($user->status === 'fired') {
             throw new ApiException(403, 'Forbidden. The user is already fired!');
         }
         $user->toDismiss();
 
         return response()->json([
             'data' => [
-                'id'=>$user->id,
-                'status'=>'fired'
+                'id' => $user->id,
+                'status' => 'fired'
             ]
-        ])->setStatusCode(200, 'OK');
+        ]);
     }
-
 
 }

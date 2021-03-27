@@ -15,14 +15,7 @@ class WorkShiftResource extends JsonResource
     public function toArray($request)
     {
         $collection = parent::toArray($request);
-
-        foreach ($this->workers as $worker) {
-            $collection['users'][] = [
-                'id' => $worker->id,
-                'name' => $worker->name,
-                'group' => $worker->group,
-            ];
-        };
+        $collection['users']=WorkerResource::collection($this->workers);
         return $collection;
     }
 }

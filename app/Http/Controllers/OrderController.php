@@ -28,20 +28,19 @@ class OrderController extends Controller
             throw new ApiException(403, 'Forbidden. The shift must be active!');
         };
 
-        if (!ShiftWorker::where(['user_id' => Auth::user()->id, 'work_shift_id' => $request->work_shift_id])->first()) {
+        if (!$shiftWorker = Auth::user()->getShiftWorker($request->work_shift_id)) {
             throw new ApiException(403, 'Forbidden. You don\'t work this shift!');
         };
 
         $order = Order::create([
             'table_id' => $request->table_id,
             'number_of_person' => $request->number_of_person,
-            'shift_worker_id' => ShiftWorker::where(['user_id' => Auth::user()->id, 'work_shift_id' => $request->work_shift_id])->first()->id,
+            'shift_worker_id' => $shiftWorker->id,
             'status_order_id' => StatusOrder::where(['code' => 'taken'])->first()->id
         ]);
 
         return new OrderResource($order);
     }
-
 
     public function show(Order $order)
     {
@@ -51,7 +50,6 @@ class OrderController extends Controller
 
         return new OrdersDetailResource($order);
     }
-
 
     public function update(Request $request, $id)
     {

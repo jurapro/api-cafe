@@ -65,7 +65,7 @@ class WorkShiftController extends Controller
                 'id_user' => $shiftWorkerRequest->user_id,
                 'status' => 'added'
             ]
-        ])->setStatusCode(201);
+        ])->setStatusCode(201,'Created');
 
     }
 
