@@ -23,7 +23,7 @@ class CreateUsersTable extends Migration
             $table->string('photo_file')->nullable();
             $table->string('api_token')->nullable();
             $table->enum('status',['working','fired'])->default('working');
-            $table->foreignId('role_id')->constrained();
+            $table->foreignId('role_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -2,13 +2,12 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Contracts\Validation\Validator;
+use App\Rules\OrderRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
 
 class OrderRequest extends ApiRequest
 {
-     /**
+    /**
      * Get the validation rules that apply to the request.
      *
      * @return array
@@ -16,21 +15,9 @@ class OrderRequest extends ApiRequest
     public function rules()
     {
         return [
-            'name' => 'required',
-            'from' => 'required',
-            'to' => 'required',
-            'user_id' => 'required | integer | exists:users,id',
+            'work_shift_id' => 'required|exists:work_shifts,id',
+            'table_id' => 'required|exists:tables,id',
+            'number_of_person' => 'integer'
         ];
     }
-
-    public function messages()
-    {
-        $messages = parent::messages();
-        $messages += [
-            'user_id.exists' => 'Пользователь не найден',
-        ];
-        return $messages;
-    }
-
-
 }

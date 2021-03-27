@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Auth;
 
 class WorkShiftOrdersResource extends JsonResource
 {
@@ -15,7 +16,9 @@ class WorkShiftOrdersResource extends JsonResource
     public function toArray($request)
     {
         $collection = parent::toArray($request);
-        $collection['orders'] = OrderResource::collection($this->orders);
+        $orders = $this->orders;
+        $collection['orders'] = OrderResource::collection($orders);
+        $collection['amount_for_all'] = $this->amountForAllOrders();
         return $collection;
     }
 }

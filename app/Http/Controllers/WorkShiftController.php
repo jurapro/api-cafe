@@ -11,6 +11,7 @@ use App\Http\Resources\WorkShiftResource;
 use App\Models\ShiftWorker;
 use App\Models\User;
 use App\Models\WorkShift;
+use Illuminate\Support\Facades\Auth;
 
 
 class WorkShiftController extends Controller
@@ -83,6 +84,10 @@ class WorkShiftController extends Controller
 
     public function orders(WorkShift $workShift)
     {
+        if (!Auth::user()->hasRole(['admin']) && !$workShift->hasUser(Auth::user()->id)) {
+            throw new ApiException(403, 'Forbidden. You didn\'t work this shift!');
+        }
+
         return new WorkShiftOrdersResource($workShift);
     }
 }

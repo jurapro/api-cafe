@@ -34,3 +34,8 @@ Route::middleware(['auth:api', 'role:admin|waiter'])
         Route::get('/work-shift/{workShift}/orders', [Controllers\WorkShiftController::class, 'orders']);
         Route::apiResource('order', Controllers\OrderController::class, ['only' => ['index', 'show']]);
     });
+
+Route::middleware(['auth:api', 'role:waiter'])
+    ->group(function () {
+        Route::post('order',  [Controllers\OrderController::class, 'store']);
+    });

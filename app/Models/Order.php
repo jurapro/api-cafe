@@ -11,8 +11,9 @@ class Order extends Model
 
     protected $fillable = [
         'number_of_person',
-        'waiter_table_id',
+        'table_id',
         'status_order_id',
+        'shift_worker_id'
     ];
 
 
@@ -23,18 +24,26 @@ class Order extends Model
 
     public function status()
     {
-        return $this->belongsTo(StatusOrder::class,'status_order_id');
+        return $this->belongsTo(StatusOrder::class, 'status_order_id');
     }
 
-    public function user()
+    public function worker()
     {
-        return $this->hasOneThrough(User::class,ShiftWorker::class,
-            'id','id');
+        return $this->belongsTo(ShiftWorker::class,'shift_worker_id');
     }
 
     public function positions()
     {
         return $this->hasMany(OrderMenu::class);
+    }
+
+    public function getPrice()
+    {
+        $price = 0;
+        foreach ($this->positions as $item) {
+            $price += $item->count * $item->product->price;
+        }
+        return $price;
     }
 
 }

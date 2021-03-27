@@ -16,9 +16,9 @@ class CreateOrdersTable extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->integer('number_of_person')->nullable();
-            $table->foreignId('table_id')->constrained();
-            $table->foreignId('shift_worker_id')->constrained();
-            $table->foreignId('status_order_id')->constrained();
+            $table->foreignId('table_id')->constrained()->onDelete('cascade');
+            $table->foreignId('shift_worker_id')->constrained()->onDelete('cascade');
+            $table->foreignId('status_order_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

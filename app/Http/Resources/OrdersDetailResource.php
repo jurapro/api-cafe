@@ -15,10 +15,8 @@ class OrdersDetailResource extends OrderResource
     public function toArray($request)
     {
         $collection = parent::toArray($request);
-        $price = 0;
 
         foreach ($this->positions as $item) {
-            $price += $item->count * $item->product->price;
             $collection['positions'][] = [
                 'id' => $item->id,
                 'count' => $item->count,
@@ -26,7 +24,7 @@ class OrdersDetailResource extends OrderResource
                 'price' => $item->count * $item->product->price,
             ];
         };
-        $collection['price_all'] = $price;
+        $collection['price_all'] = $this->getPrice();
         return $collection;
     }
 }

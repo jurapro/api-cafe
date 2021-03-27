@@ -14,8 +14,8 @@ class CreateShiftWorkersTable extends Migration
     {
         Schema::create('shift_workers', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('work_shift_id')->constrained();
-            $table->foreignId('user_id')->constrained();
+            $table->foreignId('work_shift_id')->constrained()->onDelete('cascade');;
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');;
             $table->timestamps();
         });
     }

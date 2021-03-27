@@ -15,8 +15,8 @@ class CreateOrderMenusTable extends Migration
     {
         Schema::create('order_menus', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('menu_id')->constrained();
-            $table->foreignId('order_id')->constrained();
+            $table->foreignId('menu_id')->constrained()->onDelete('cascade');;
+            $table->foreignId('order_id')->constrained()->onDelete('cascade');;
             $table->integer('count')->default(1);
             $table->timestamps();
         });

@@ -49,9 +49,23 @@ class WorkShift extends Model
         return $this->workers()->where(['user_id' => $id_user])->exists();
     }
 
+    public function getWorker($id_user)
+    {
+        return $this->workers()->where(['user_id' => $id_user])->get();
+    }
+
     public function removeUser($id_user)
     {
         $this->workers()->findOrFail($id_user);
         ShiftWorker::where(['user_id' => $id_user, 'work_shift_id' => $this->id])->delete();
+    }
+
+    public function amountForAllOrders()
+    {
+        $sum = 0;
+        foreach ($this->orders as $item) {
+            $sum += $item->getPrice();
+        }
+        return $sum;
     }
 }
