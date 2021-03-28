@@ -17,7 +17,7 @@ class TableSeeder extends Seeder
         $tables = array_map(function ($n) {
             return [
                 'name' => "Столик №$n",
-                'capacity' => rand(2,10)
+                'capacity' => rand(2, 10)
             ];
         }, range(1, 10));
 

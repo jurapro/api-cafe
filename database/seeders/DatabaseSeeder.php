@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\ShiftWorker;
+use App\Models\WorkShift;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -21,7 +23,11 @@ class DatabaseSeeder extends Seeder
             MenuCategorySeeder::class,
             MenuSeeder::class,
             TableSeeder::class,
-            StatusOrderSeeder::class
+            StatusOrderSeeder::class,
+            WorkShiftSeeder::class,
+            ShiftWorkerSeeder::class,
+            OrderSeeder::class,
+            OrderMenuSeeder::class
         ]);
     }
 }

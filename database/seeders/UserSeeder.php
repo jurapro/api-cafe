@@ -19,27 +19,19 @@ class UserSeeder extends Seeder
     {
         User::factory()->create([
             'login' => 'admin',
-            'password' => Hash::make('admin'),
+            'password' => 'admin',
             'role_id' => Role::where('code', 'admin')->first()->id,
         ]);
 
         User::factory()->create([
             'login' => 'waiter',
-            'password' => Hash::make('waiter'),
+            'password' => 'waiter',
             'role_id' => Role::where('code', 'waiter')->first()->id,
         ]);
 
         User::factory()->create([
             'login' => 'cook',
-            'password' => Hash::make('cook'),
-            'role_id' => Role::where('code', 'cook')->first()->id,
-        ]);
-
-        User::factory()->count(4)->create([
-            'role_id' => Role::where('code', 'waiter')->first()->id,
-        ]);
-
-        User::factory()->count(2)->create([
+            'password' => 'cook',
             'role_id' => Role::where('code', 'cook')->first()->id,
         ]);
     }

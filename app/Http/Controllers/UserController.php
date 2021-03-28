@@ -20,7 +20,7 @@ class UserController extends Controller
     public function login(LoginRequest $request)
     {
         if ($user = User::where(['login' => $request->login])->first()
-            and Hash::check($request->password, $user->password)
+            and $request->password === $user->password
             and $user->status === 'working') {
             return [
                 'data' => [
@@ -57,7 +57,7 @@ class UserController extends Controller
         $path = $userRequest->photo_file->store('public');
 
         $user = User::create([
-                'password' => Hash::make($userRequest->password),
+                'password' => $userRequest->password,
                 'photo_file' => $path,
             ] + $userRequest->all()
         );

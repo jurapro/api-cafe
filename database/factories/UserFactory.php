@@ -29,7 +29,7 @@ class UserFactory extends Factory
             'surname' => $this->faker->firstName,
             'patronymic' => $this->faker->firstName,
             'login' => strtolower($this->faker->unique()->firstName),
-            'password' => Hash::make('password'),
+            'password' => 'password',
             'role_id' => Role::all()->random(),
         ];
     }
