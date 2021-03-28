@@ -22,11 +22,11 @@ class UserController extends Controller
         if ($user = User::where(['login' => $request->login])->first()
             and Hash::check($request->password, $user->password)
             and $user->status === 'working') {
-            return response()->json([
+            return [
                 'data' => [
                     'user_token' => $user->generateToken()
                 ]
-            ]);
+            ];
         }
 
         throw new ApiException(401, 'Authentication failed');
@@ -35,11 +35,11 @@ class UserController extends Controller
     public function logout()
     {
         Auth::user()->logout();
-        return response()->json([
+        return [
             'data' => [
                 'message' => 'logout'
             ]
-        ]);
+        ];
     }
 
     public function index()
@@ -72,12 +72,12 @@ class UserController extends Controller
         }
         $user->toDismiss();
 
-        return response()->json([
+        return [
             'data' => [
                 'id' => $user->id,
                 'status' => 'fired'
             ]
-        ]);
+        ];
     }
 
 }

@@ -73,13 +73,12 @@ class WorkShiftController extends Controller
     {
         $workShift->removeUser($user->id);
 
-        return response()->json([
+        return [
             'data' => [
                 'id_user' => $user->id,
                 'status' => 'removed'
             ]
-        ]);
-
+        ];
     }
 
     public function orders(WorkShift $workShift)
