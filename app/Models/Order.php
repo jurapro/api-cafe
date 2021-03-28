@@ -48,30 +48,8 @@ class Order extends Model
         return $price;
     }
 
-    public function changeStatus($status)
+    public function changeStatus($status, $allowed)
     {
-        if(!$this->worker->workShift->active) {
-            throw new ApiException(403, 'You cannot change the order status of a closed shift!');
-        }
-
-        if (Auth::user()->hasRole(['waiter'])) {
-            if (Auth::user()->id !== $this->worker->user->id) {
-                throw new ApiException(403, 'Forbidden! You did not accept this order!');
-            }
-
-            $allowed = [
-                'taken' => 'canceled',
-                'ready' => 'paid-up'
-            ];
-        }
-
-        if (Auth::user()->hasRole(['cook'])) {
-            $allowed = [
-                'taken' => 'preparing',
-                'preparing' => 'ready'
-            ];
-        }
-
         if (empty($allowed[$this->status->code]) || $allowed[$this->status->code] !== $status) {
             throw new ApiException(403, 'Forbidden! Can\'t change existing order status');
         }
@@ -80,4 +58,5 @@ class Order extends Model
         $this->status_order_id = $id_status;
         $this->save();
     }
+
 }
