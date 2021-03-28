@@ -15,6 +15,7 @@ use App\Models\OrderMenu;
 use App\Models\ShiftWorker;
 use App\Models\StatusOrder;
 use App\Models\WorkShift;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -63,7 +64,7 @@ class OrderController extends Controller
             throw new ApiException(403, 'You cannot change the order status of a closed shift!');
         }
 
-        if (Auth::user()->id !== $order->worker->user->id) {
+        if (!Gate::allows('my-taken-order',$order)){
             throw new ApiException(403, 'Forbidden! You did not accept this order!');
         }
 
@@ -117,7 +118,7 @@ class OrderController extends Controller
 
     public function addPosition(Order $order, PositionRequest $positionRequest)
     {
-        if (Auth::user()->id !== $order->worker->user->id) {
+        if (!Gate::allows('my-taken-order',$order)){
             throw new ApiException(403, 'Forbidden! You did not accept this order!');
         }
 
@@ -140,7 +141,7 @@ class OrderController extends Controller
 
     public function removePosition(Order $order, OrderMenu $orderMenu)
     {
-        if (Auth::user()->id !== $order->worker->user->id) {
+        if (!Gate::allows('my-taken-order',$order)){
             throw new ApiException(403, 'Forbidden! You did not accept this order!');
         }
 
