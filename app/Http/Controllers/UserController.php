@@ -54,7 +54,10 @@ class UserController extends Controller
 
     public function store(UserRequest $userRequest)
     {
-        $path = $userRequest->photo_file->store('public');
+        $path = null;
+        if ($userRequest->photo_file) {
+            $path = $userRequest->photo_file->store('public');
+        }
 
         $user = User::create([
                 'password' => $userRequest->password,
@@ -62,7 +65,12 @@ class UserController extends Controller
             ] + $userRequest->all()
         );
 
-        return response()->json(['id' => $user->id])->setStatusCode(201, 'Created');
+        return response()->json([
+            'data'=>[
+                'id' => $user->id,
+                 'status' => 'created'
+            ]
+        ])->setStatusCode(201, 'Created');
     }
 
     public function toDismiss(User $user)
