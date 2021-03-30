@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Exceptions\ApiException;
 use App\Http\Requests\AccessOrderRequest;
-use App\Http\Requests\ChangeStatusRequest;
-use App\Http\Requests\OrderRequest;
-use App\Http\Requests\PositionRequest;
+use App\Http\Requests\ChangeStatusForCookRequest;
+use App\Http\Requests\ChangeStatusForWaiterRequest;
+use App\Http\Requests\AddOrderRequest;
+use App\Http\Requests\AddPositionRequest;
+use App\Http\Requests\RemovePositionRequest;
+use App\Http\Requests\ShowOrderRequest;
 use App\Http\Resources\OrderResource;
 use App\Http\Resources\OrdersDetailResource;
 use App\Models\MenuCategory;
@@ -29,49 +32,27 @@ class OrderController extends Controller
         return OrderResource::collection(Order::all());
     }
 
-    public function store(OrderRequest $request)
+    public function store(AddOrderRequest $request)
     {
-        if (!WorkShift::where(['id' => $request->work_shift_id])->first()->active) {
-            throw new ApiException(403, 'Forbidden. The shift must be active!');
-        };
-
-        if (!$shiftWorker = Auth::user()->getShiftWorker($request->work_shift_id)) {
-            throw new ApiException(403, 'Forbidden. You don\'t work this shift!');
-        };
-
         $order = Order::create([
             'table_id' => $request->table_id,
             'number_of_person' => $request->number_of_person,
-            'shift_worker_id' => $shiftWorker->id,
+            'shift_worker_id' => Auth::user()->getShiftWorker($request->work_shift_id)->id,
             'status_order_id' => StatusOrder::where(['code' => 'taken'])->first()->id
         ]);
 
         return new OrderResource($order);
     }
 
-    public function show(Order $order)
+    public function show(Order $order, ShowOrderRequest $showOrderRequest)
     {
-        if (!Auth::user()->hasRole(['admin']) && !$order->worker()->where(['user_id' => Auth::user()->id])->count()) {
-            throw new ApiException(403, 'Forbidden. You did not accept this order!');
-        }
-
         return new OrdersDetailResource($order);
     }
 
-    public function changeStatusForWaiter(Order $order, ChangeStatusRequest $changeStatusRequest)
+
+    public function changeStatusForWaiter(Order $order, ChangeStatusForWaiterRequest $changeStatusRequest)
     {
-        if (!$order->worker->workShift->active) {
-            throw new ApiException(403, 'You cannot change the order status of a closed shift!');
-        }
-
-        if (!Gate::allows('my-taken-order',$order)){
-            throw new ApiException(403, 'Forbidden! You did not accept this order!');
-        }
-
-        $order->changeStatus($changeStatusRequest->status, [
-            'taken' => 'canceled',
-            'ready' => 'paid-up'
-        ]);
+        $order->changeStatus($changeStatusRequest->status);
 
         return [
             'data' => [
@@ -81,12 +62,9 @@ class OrderController extends Controller
         ];
     }
 
-    public function changeStatusForCook(Order $order, ChangeStatusRequest $changeStatusRequest)
+    public function changeStatusForCook(Order $order, ChangeStatusForCookRequest $changeStatusRequest)
     {
-        $order->changeStatus($changeStatusRequest->status, [
-            'taken' => 'preparing',
-            'preparing' => 'ready'
-        ]);
+        $order->changeStatus($changeStatusRequest->status);
 
         return [
             'data' => [
@@ -112,49 +90,23 @@ class OrderController extends Controller
             return in_array($order->status_order_id, $status);
         });
 
-
         return OrderResource::collection($orders);
     }
 
-    public function addPosition(Order $order, PositionRequest $positionRequest)
+    public function addPosition(Order $order, AddPositionRequest $addPositionRequest)
     {
-        if (!Gate::allows('my-taken-order',$order)){
-            throw new ApiException(403, 'Forbidden! You did not accept this order!');
-        }
-
-        if (!$order->worker->workShift->active) {
-            throw new ApiException(403, 'Forbidden! You cannot change the order status of a closed shift!');
-        }
-
-        if ($order->status->code!=='taken' && $order->status->code!=='preparing') {
-            throw new ApiException(403, 'Forbidden! Cannot be added to an order with this status');
-        }
-
         OrderMenu::create([
-            'order_id'=>$order->id,
-            'menu_id'=>$positionRequest->menu_id,
-            'count'=>$positionRequest->count,
+            'order_id' => $order->id,
+            'menu_id' => $addPositionRequest->menu_id,
+            'count' => $addPositionRequest->count,
         ]);
 
         return new OrdersDetailResource($order);
     }
 
-    public function removePosition(Order $order, OrderMenu $orderMenu)
+    public function removePosition(Order $order, OrderMenu $orderMenu, RemovePositionRequest $removePositionRequest)
     {
-        if (!Gate::allows('my-taken-order',$order)){
-            throw new ApiException(403, 'Forbidden! You did not accept this order!');
-        }
-
-        if (!$order->worker->workShift->active) {
-            throw new ApiException(403, 'Forbidden! You cannot change the order status of a closed shift!');
-        }
-
-        if ($order->status->code!=='taken') {
-            throw new ApiException(403, 'Forbidden! Cannot be added to an order with this status');
-        }
-
         $orderMenu->delete();
-
         return new OrdersDetailResource($order);
     }
 }

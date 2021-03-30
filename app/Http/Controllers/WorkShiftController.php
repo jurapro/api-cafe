@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\ApiException;
-use App\Http\Requests\ChangeStatusRequest;
+use App\Http\Requests\ChangeStatusForWaiterRequest;
 use App\Http\Requests\CloseWorkShiftRequest;
 use App\Http\Requests\GetOrdersRequest;
 use App\Http\Requests\OpenWorkShiftRequest;

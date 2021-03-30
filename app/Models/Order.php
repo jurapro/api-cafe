@@ -48,12 +48,8 @@ class Order extends Model
         return $price;
     }
 
-    public function changeStatus($status, $allowed)
+    public function changeStatus($status)
     {
-        if (empty($allowed[$this->status->code]) || $allowed[$this->status->code] !== $status) {
-            throw new ApiException(403, 'Forbidden! Can\'t change existing order status');
-        }
-
         $id_status = StatusOrder::where(['code' => $status])->first()->id;
         $this->status_order_id = $id_status;
         $this->save();
