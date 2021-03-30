@@ -2,16 +2,24 @@
 
 namespace App\Http\Requests;
 
+use App\Exceptions\ApiException;
 use App\Rules\WorkingUserRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ShiftWorkerRequest extends ApiRequest
 {
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array
-     */
+
+    public function authorize()
+    {
+        $workShift = $this->route('workShift');
+
+        if ($workShift->hasUser($this->user_id)) {
+            return false;
+        }
+
+        return true;
+    }
+
     public function rules()
     {
         return [
@@ -26,4 +34,8 @@ class ShiftWorkerRequest extends ApiRequest
         ];
     }
 
+    protected function failedAuthorization()
+    {
+        throw new ApiException(403, 'Forbidden. The worker is already on shift!');
+    }
 }

@@ -3,15 +3,14 @@
 namespace App\Http\Requests;
 
 use App\Exceptions\ApiException;
+use App\Models\WorkShift;
 use Illuminate\Foundation\Http\FormRequest;
 
-class DismissUserRequest extends ApiRequest
+class OpenWorkShiftRequest extends ApiRequest
 {
     public function authorize()
     {
-        $user = $this->route('user');
-
-        if ($user->status === 'fired') {
+        if (WorkShift::where(['active' => true])->count()) {
             return false;
         }
 
@@ -27,6 +26,6 @@ class DismissUserRequest extends ApiRequest
 
     protected function failedAuthorization()
     {
-        throw new ApiException(403, 'Forbidden. The user is already fired!');
+        throw new ApiException(403, 'Forbidden. There are open shifts!');
     }
 }

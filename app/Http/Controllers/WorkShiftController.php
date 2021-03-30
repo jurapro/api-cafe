@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\ApiException;
+use App\Http\Requests\ChangeStatusRequest;
+use App\Http\Requests\CloseWorkShiftRequest;
+use App\Http\Requests\GetOrdersRequest;
+use App\Http\Requests\OpenWorkShiftRequest;
 use App\Http\Requests\ShiftWorkerRequest;
 use App\Http\Requests\UsersArrayRequest;
 use App\Http\Requests\WorkShiftRequest;
@@ -31,30 +35,18 @@ class WorkShiftController extends Controller
         return new WorkShiftResource($workShift);
     }
 
-    public function open(WorkShift $workShift)
+    public function open(WorkShift $workShift, OpenWorkShiftRequest $openWorkShiftRequest)
     {
-        if (WorkShift::where(['active' => true])->count()) {
-            throw new ApiException(403, 'Forbidden. There are open shifts!');
-        }
-
         return new WorkShiftResource($workShift->open());
     }
 
-    public function close(WorkShift $workShift)
+    public function close(WorkShift $workShift, CloseWorkShiftRequest $closeWorkShiftRequest)
     {
-        if (!$workShift->active) {
-            throw new ApiException(403, 'Forbidden. The shift is already closed!');
-        }
-
         return new WorkShiftResource($workShift->close());
     }
 
     public function addUser(WorkShift $workShift, ShiftWorkerRequest $shiftWorkerRequest)
     {
-        if ($workShift->hasUser($shiftWorkerRequest->user_id)) {
-            throw new ApiException(403, 'Forbidden. The worker is already on shift!');
-        }
-
         ShiftWorker::create([
             'work_shift_id' => $workShift->id,
             'user_id' => $shiftWorkerRequest->user_id
@@ -66,7 +58,6 @@ class WorkShiftController extends Controller
                 'status' => 'added'
             ]
         ])->setStatusCode(201,'Created');
-
     }
 
     public function removeUser(WorkShift $workShift, User $user)
@@ -81,12 +72,8 @@ class WorkShiftController extends Controller
         ];
     }
 
-    public function orders(WorkShift $workShift)
+    public function orders(WorkShift $workShift, GetOrdersRequest $getOrdersRequest)
     {
-        if (!Auth::user()->hasRole(['admin']) && !$workShift->hasUser(Auth::user()->id)) {
-            throw new ApiException(403, 'Forbidden. You didn\'t work this shift!');
-        }
-
         return new WorkShiftOrdersResource($workShift);
     }
 }
