@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\ApiException;
+use App\Http\Requests\DismissUserRequest;
 use App\Http\Requests\FoundRequest;
 use App\Http\Requests\LoginRequest;
-use App\Http\Requests\UserRequest;
+use App\Http\Requests\RegisterUserRequest;
 
 use App\Http\Resources\UserAllResource;
 use App\Http\Resources\UserResource;
@@ -19,17 +20,11 @@ class UserController extends Controller
 {
     public function login(LoginRequest $request)
     {
-        if ($user = User::where(['login' => $request->login])->first()
-            and $request->password === $user->password
-            and $user->status === 'working') {
-            return [
-                'data' => [
-                    'user_token' => $user->generateToken()
-                ]
-            ];
-        }
-
-        throw new ApiException(401, 'Authentication failed');
+        return [
+            'data' => [
+                'user_token' => User::where(['login' => $request->login])->first()->generateToken()
+            ]
+        ];
     }
 
     public function logout()
@@ -52,32 +47,24 @@ class UserController extends Controller
         return new UserResource($user);
     }
 
-    public function store(UserRequest $userRequest)
+    public function store(RegisterUserRequest $userRequest)
     {
-        $path = null;
-        if ($userRequest->photo_file) {
-            $path = $userRequest->photo_file->store('public');
-        }
-
         $user = User::create([
                 'password' => $userRequest->password,
-                'photo_file' => $path,
+                'photo_file' => $userRequest->photo_file ? $userRequest->photo_file->store('public') : null,
             ] + $userRequest->all()
         );
 
         return response()->json([
-            'data'=>[
+            'data' => [
                 'id' => $user->id,
-                 'status' => 'created'
+                'status' => 'created'
             ]
         ])->setStatusCode(201, 'Created');
     }
 
-    public function toDismiss(User $user)
+    public function toDismiss(User $user, DismissUserRequest $dismissUserRequest)
     {
-        if ($user->status === 'fired') {
-            throw new ApiException(403, 'Forbidden. The user is already fired!');
-        }
         $user->toDismiss();
 
         return [

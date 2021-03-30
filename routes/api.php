@@ -23,10 +23,12 @@ Route::middleware(['auth:api', 'role:admin'])
         Route::get('/user/{user}/to-dismiss', [Controllers\UserController::class, 'toDismiss']);
 
         Route::apiResource('work-shift', Controllers\WorkShiftController::class, ['only' => ['index', 'store', 'show']]);
-        Route::get('/work-shift/{workShift}/open', [Controllers\WorkShiftController::class, 'open']);
-        Route::get('/work-shift/{workShift}/close', [Controllers\WorkShiftController::class, 'close']);
-        Route::post('/work-shift/{workShift}/user', [Controllers\WorkShiftController::class, 'addUser']);
-        Route::delete('/work-shift/{workShift}/user/{user}', [Controllers\WorkShiftController::class, 'removeUser']);
+        Route::prefix('work-shift')->group(function () {
+            Route::get('/{workShift}/open', [Controllers\WorkShiftController::class, 'open']);
+            Route::get('/{workShift}/close', [Controllers\WorkShiftController::class, 'close']);
+            Route::post('/{workShift}/user', [Controllers\WorkShiftController::class, 'addUser']);
+            Route::delete('/{workShift}/user/{user}', [Controllers\WorkShiftController::class, 'removeUser']);
+        });
     });
 
 Route::middleware(['auth:api', 'role:admin|waiter'])
@@ -35,16 +37,16 @@ Route::middleware(['auth:api', 'role:admin|waiter'])
         Route::apiResource('order', Controllers\OrderController::class, ['only' => ['index', 'show']]);
     });
 
-Route::middleware(['auth:api', 'role:waiter'])
+Route::middleware(['auth:api', 'role:waiter'])->prefix('order')
     ->group(function () {
-        Route::post('/order',  [Controllers\OrderController::class, 'store']);
-        Route::patch('/order/{order}/change-waiter',  [Controllers\OrderController::class, 'changeStatusForWaiter']);
-        Route::post('/order/{order}/position',  [Controllers\OrderController::class, 'addPosition']);
-        Route::delete('/order/{order}/position/{orderMenu}',  [Controllers\OrderController::class, 'removePosition']);
+        Route::post('/', [Controllers\OrderController::class, 'store']);
+        Route::patch('/{order}/change-waiter', [Controllers\OrderController::class, 'changeStatusForWaiter']);
+        Route::post('/{order}/position', [Controllers\OrderController::class, 'addPosition']);
+        Route::delete('/{order}/position/{orderMenu}', [Controllers\OrderController::class, 'removePosition']);
     });
 
-Route::middleware(['auth:api', 'role:cook'])
+Route::middleware(['auth:api', 'role:cook'])->prefix('order')
     ->group(function () {
-        Route::patch('/order/{order}/change-cook',  [Controllers\OrderController::class, 'changeStatusForCook']);
-        Route::get('/order/taken/get', [Controllers\OrderController::class, 'takenOrders']);
+        Route::patch('/{order}/change-cook', [Controllers\OrderController::class, 'changeStatusForCook']);
+        Route::get('/taken/get', [Controllers\OrderController::class, 'takenOrders']);
     });

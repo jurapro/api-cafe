@@ -24,4 +24,8 @@ class ApiRequest extends FormRequest
         return $messages;
     }
 
+    protected function failedAuthorization()
+    {
+        throw new ApiException(401, 'Authentication failed');
+    }
 }
