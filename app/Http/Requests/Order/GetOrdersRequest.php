@@ -4,19 +4,14 @@ namespace App\Http\Requests\Order;
 
 use App\Exceptions\ApiException;
 use App\Http\Requests\ApiRequest;
-use Illuminate\Support\Facades\Auth;
+
 
 class GetOrdersRequest extends ApiRequest
 {
     public function authorize()
     {
         $workShift = $this->route('workShift');
-
-        if (Auth::user()->hasRole(['admin']) || $workShift->hasUser(Auth::user()->id))
-        {
-            return true;
-        }
-        return false;
+        return $this->user()->can('orders-workShift', $workShift);
     }
 
     public function rules()

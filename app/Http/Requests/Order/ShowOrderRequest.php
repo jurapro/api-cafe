@@ -11,11 +11,7 @@ class ShowOrderRequest extends ApiRequest
     public function authorize()
     {
         $order = $this->route('order');
-
-        if (Auth::user()->hasRole(['admin']) || $order->worker->user->id === Auth::user()->id) {
-            return true;
-        }
-        return false;
+        return $this->user()->can('show-order', $order);
     }
 
     public function rules()

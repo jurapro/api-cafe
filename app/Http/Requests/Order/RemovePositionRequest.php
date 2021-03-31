@@ -16,7 +16,7 @@ class RemovePositionRequest extends ApiRequest
             throw new ApiException(403, 'You cannot change the order status of a closed shift!');
         }
 
-        if ($order->worker->user->id !== Auth::user()->id) {
+        if ($this->user()->cannot('update-position-order', $order)) {
             throw new ApiException(403, 'Forbidden! You did not accept this order!');
         }
 

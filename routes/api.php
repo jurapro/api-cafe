@@ -40,13 +40,16 @@ Route::middleware(['auth:api', 'role:admin|waiter'])
 Route::middleware(['auth:api', 'role:waiter'])->prefix('order')
     ->group(function () {
         Route::post('/', [Controllers\OrderController::class, 'store']);
-        Route::patch('/{order}/change-waiter', [Controllers\OrderController::class, 'changeStatusForWaiter']);
         Route::post('/{order}/position', [Controllers\OrderController::class, 'addPosition']);
         Route::delete('/{order}/position/{orderMenu}', [Controllers\OrderController::class, 'removePosition']);
     });
 
+Route::middleware(['auth:api', 'role:waiter|cook'])
+    ->group(function () {
+        Route::patch('/order/{order}/change-status', [Controllers\OrderController::class, 'changeStatus']);
+    });
+
 Route::middleware(['auth:api', 'role:cook'])->prefix('order')
     ->group(function () {
-        Route::patch('/{order}/change-cook', [Controllers\OrderController::class, 'changeStatusForCook']);
         Route::get('/taken/get', [Controllers\OrderController::class, 'takenOrders']);
     });

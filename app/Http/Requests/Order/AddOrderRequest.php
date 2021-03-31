@@ -11,13 +11,15 @@ class AddOrderRequest extends ApiRequest
 {
     public function authorize()
     {
-        if (!WorkShift::where(['id' => $this->work_shift_id])->first()->active) {
+        $workShift = WorkShift::find($this->work_shift_id);
+
+        if (!$workShift->active) {
             throw new ApiException(403, 'Forbidden. The shift must be active!');
         };
 
-        if (!Auth::user()->getShiftWorker($this->work_shift_id)) {
+        if ($this->user()->cannot('store-order', $workShift)) {
             throw new ApiException(403, 'Forbidden. You don\'t work this shift!');
-        };
+        }
 
         return true;
     }

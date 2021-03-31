@@ -2,10 +2,15 @@
 
 namespace App\Providers;
 
+use App\Exceptions\ApiException;
 use App\Models\Order;
 use App\Models\User;
+use App\Models\WorkShift;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use phpDocumentor\Reflection\Types\Integer;
+use function Symfony\Component\String\u;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -27,9 +32,30 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        /*        Gate::define('my-taken-order', function (User $user, Order $order) {
-                    return $user->id === $order->worker->user->id;
-                });*/
+        Gate::define('orders-workShift', function (User $user, WorkShift $workShift) {
+            return $user->hasRole(['admin']) || $workShift->hasUser($user->id);
+        });
+
+        Gate::define('store-order', function (User $user, WorkShift $workShift) {
+            return $workShift->hasUser($user->id);
+        });
+
+        Gate::define('show-order', function (User $user, Order $order) {
+            return $user->hasRole(['admin']) || $order->worker->user->id === $user->id;
+        });
+
+        Gate::define('changeStatus-order', function (User $user, Order $order) {
+            return $user->hasRole(['cook']) || $order->worker->user->id === $user->id;
+        });
+
+        Gate::define('allowStatus-order', function (User $user, Order $order, $status) {
+            return in_array($status, $order->getAllowedsTransitions($user));
+        });
+
+        Gate::define('update-position-order', function (User $user, Order $order) {
+            return $order->worker->user->id === $user->id;
+        });
+
 
     }
 }

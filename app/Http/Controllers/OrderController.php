@@ -4,8 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Order\AddOrderRequest;
 use App\Http\Requests\Order\AddPositionRequest;
-use App\Http\Requests\Order\ChangeStatusForCookRequest;
-use App\Http\Requests\Order\ChangeStatusForWaiterRequest;
+use App\Http\Requests\Order\ChangeStatusRequest;
 use App\Http\Requests\Order\RemovePositionRequest;
 use App\Http\Requests\Order\ShowOrderRequest;
 use App\Http\Resources\OrderResource;
@@ -42,19 +41,7 @@ class OrderController extends Controller
     }
 
 
-    public function changeStatusForWaiter(Order $order, ChangeStatusForWaiterRequest $changeStatusRequest)
-    {
-        $order->changeStatus($changeStatusRequest->status);
-
-        return [
-            'data' => [
-                'id' => $order->id,
-                'status' => $changeStatusRequest->status
-            ]
-        ];
-    }
-
-    public function changeStatusForCook(Order $order, ChangeStatusForCookRequest $changeStatusRequest)
+    public function changeStatus(Order $order, ChangeStatusRequest $changeStatusRequest)
     {
         $order->changeStatus($changeStatusRequest->status);
 
@@ -68,19 +55,12 @@ class OrderController extends Controller
 
     public function takenOrders()
     {
-        $ordersActiveShift = WorkShift::where(['active' => true])->first()->orders;
-
-        $orders = $ordersActiveShift->filter(function ($order) {
-
-            $status = StatusOrder::where(['code' => 'taken'])
-                ->orWhere(['code' => 'preparing'])
-                ->get()
-                ->map(function ($item) {
-                    return $item->id;
-                })->toArray();
-
-            return in_array($order->status_order_id, $status);
-        });
+        $orders = WorkShift::where(['active' => true])
+            ->first()
+            ->orders
+            ->filter(function ($order) {
+                return in_array($order->status->code, ['preparing', 'taken']);
+            });
 
         return OrderResource::collection($orders);
     }

@@ -55,4 +55,22 @@ class Order extends Model
         $this->save();
     }
 
+    public function getAllowedsTransitions(User $user)
+    {
+        if ($user->hasRole(['waiter'])) {
+            $alloweds = [
+                'taken' => ['canceled'],
+                'ready' => ['paid-up']
+            ];
+        }
+
+        if ($user->hasRole(['cook'])) {
+            $alloweds = [
+                'taken' => ['preparing'],
+                'preparing' => ['ready']
+            ];
+        }
+
+        return $alloweds[$this->status->code] ?? [];
+    }
 }
