@@ -1,13 +1,15 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Order;
 
 use App\Exceptions\ApiException;
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\ApiRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
-class AddPositionRequest extends ApiRequest
+class ChangeStatusForWaiterRequest extends ApiRequest
 {
+
     public function authorize()
     {
         $order = $this->route('order');
@@ -20,8 +22,13 @@ class AddPositionRequest extends ApiRequest
             throw new ApiException(403, 'Forbidden! You did not accept this order!');
         }
 
-        if (!in_array($order->status->code, ['taken', 'preparing'])) {
-            throw new ApiException(403, 'Forbidden! Cannot be added to an order with this status');
+        $allowed = [
+            'taken' => 'canceled',
+            'ready' => 'paid-up'
+        ];
+
+        if (empty($allowed[$order->status->code]) || $allowed[$order->status->code] !== $this->status) {
+            throw new ApiException(403, 'Forbidden! Can\'t change existing order status');
         }
 
         return true;
@@ -30,8 +37,8 @@ class AddPositionRequest extends ApiRequest
     public function rules()
     {
         return [
-            'menu_id' => 'required|exists:menus,id',
-            'count' => 'required|integer|between:1,10'
+            'status' => ['required',
+                Rule::in(['taken', 'preparing', 'ready', 'paid-up', 'canceled'])]
         ];
     }
 
@@ -39,8 +46,7 @@ class AddPositionRequest extends ApiRequest
     {
         $messages = parent::messages();
         $messages += [
-            'menu_id.exists' => 'Item is not in the menu',
-            'count.between' => 'The number of portions should be from 1 to 10'
+            'in' => 'Status can only be: taken, preparing, ready, paid-up, canceled'
         ];
         return $messages;
     }

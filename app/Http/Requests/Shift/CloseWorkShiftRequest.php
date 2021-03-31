@@ -1,21 +1,20 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Shift;
 
 use App\Exceptions\ApiException;
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\ApiRequest;
 
-class GetOrdersRequest extends ApiRequest
+class CloseWorkShiftRequest extends ApiRequest
 {
     public function authorize()
     {
         $workShift = $this->route('workShift');
 
-        if (Auth::user()->hasRole(['admin']) || $workShift->hasUser(Auth::user()->id))
-        {
+        if ($workShift->active) {
             return true;
         }
+
         return false;
     }
 
@@ -28,6 +27,6 @@ class GetOrdersRequest extends ApiRequest
 
     protected function failedAuthorization()
     {
-        throw new ApiException(403, 'Forbidden. You didn\'t work this shift!');
+        throw new ApiException(403, 'Forbidden. The shift is already closed!');
     }
 }

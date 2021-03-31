@@ -1,20 +1,14 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use App\Exceptions\ApiException;
-use App\Http\Requests\DismissUserRequest;
-use App\Http\Requests\FoundRequest;
-use App\Http\Requests\LoginRequest;
-use App\Http\Requests\RegisterUserRequest;
-
+use App\Http\Requests\User\DismissUserRequest;
+use App\Http\Requests\User\LoginRequest;
+use App\Http\Requests\User\RegisterUserRequest;
 use App\Http\Resources\UserAllResource;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-
 
 class UserController extends Controller
 {
@@ -65,11 +59,9 @@ class UserController extends Controller
 
     public function toDismiss(User $user, DismissUserRequest $dismissUserRequest)
     {
-        $user->toDismiss();
-
         return [
             'data' => [
-                'id' => $user->id,
+                'id' => $user->toDismiss()->id,
                 'status' => 'fired'
             ]
         ];

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Shift;
 
 use App\Exceptions\ApiException;
+use App\Http\Requests\ApiRequest;
 use App\Rules\WorkingUserRule;
-use Illuminate\Foundation\Http\FormRequest;
 
 class ShiftWorkerRequest extends ApiRequest
 {

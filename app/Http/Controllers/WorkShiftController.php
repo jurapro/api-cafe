@@ -2,21 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\ApiException;
-use App\Http\Requests\ChangeStatusForWaiterRequest;
-use App\Http\Requests\CloseWorkShiftRequest;
-use App\Http\Requests\GetOrdersRequest;
-use App\Http\Requests\OpenWorkShiftRequest;
-use App\Http\Requests\ShiftWorkerRequest;
-use App\Http\Requests\UsersArrayRequest;
-use App\Http\Requests\WorkShiftRequest;
+use App\Http\Requests\Order\GetOrdersRequest;
+use App\Http\Requests\Shift\CloseWorkShiftRequest;
+use App\Http\Requests\Shift\OpenWorkShiftRequest;
+use App\Http\Requests\Shift\ShiftWorkerRequest;
+use App\Http\Requests\Shift\WorkShiftRequest;
 use App\Http\Resources\WorkShiftOrdersResource;
 use App\Http\Resources\WorkShiftResource;
 use App\Models\ShiftWorker;
 use App\Models\User;
 use App\Models\WorkShift;
-use Illuminate\Support\Facades\Auth;
-
 
 class WorkShiftController extends Controller
 {

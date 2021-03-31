@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Shift;
 
-use Illuminate\Foundation\Http\FormRequest;
+
+use App\Http\Requests\ApiRequest;
 
 class WorkShiftRequest extends ApiRequest
 {

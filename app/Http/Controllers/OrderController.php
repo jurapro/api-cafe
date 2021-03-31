@@ -2,27 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\ApiException;
-use App\Http\Requests\AccessOrderRequest;
-use App\Http\Requests\ChangeStatusForCookRequest;
-use App\Http\Requests\ChangeStatusForWaiterRequest;
-use App\Http\Requests\AddOrderRequest;
-use App\Http\Requests\AddPositionRequest;
-use App\Http\Requests\RemovePositionRequest;
-use App\Http\Requests\ShowOrderRequest;
+use App\Http\Requests\Order\AddOrderRequest;
+use App\Http\Requests\Order\AddPositionRequest;
+use App\Http\Requests\Order\ChangeStatusForCookRequest;
+use App\Http\Requests\Order\ChangeStatusForWaiterRequest;
+use App\Http\Requests\Order\RemovePositionRequest;
+use App\Http\Requests\Order\ShowOrderRequest;
 use App\Http\Resources\OrderResource;
 use App\Http\Resources\OrdersDetailResource;
-use App\Models\MenuCategory;
 use App\Models\Order;
 use App\Models\OrderMenu;
-use App\Models\ShiftWorker;
 use App\Models\StatusOrder;
 use App\Models\WorkShift;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 
 class OrderController extends Controller
 {

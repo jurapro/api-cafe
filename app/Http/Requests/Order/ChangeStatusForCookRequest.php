@@ -1,11 +1,9 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Order;
 
 use App\Exceptions\ApiException;
-use App\Models\Order;
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\ApiRequest;
 use Illuminate\Validation\Rule;
 
 class ChangeStatusForCookRequest extends ApiRequest

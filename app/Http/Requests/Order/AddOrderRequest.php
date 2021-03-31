@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Order;
 
 use App\Exceptions\ApiException;
+use App\Http\Requests\ApiRequest;
 use App\Models\WorkShift;
-use App\Rules\OrderRule;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
 class AddOrderRequest extends ApiRequest
