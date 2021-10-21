@@ -9,6 +9,7 @@ use App\Http\Requests\Order\RemovePositionRequest;
 use App\Http\Requests\Order\ShowOrderRequest;
 use App\Http\Resources\OrderResource;
 use App\Http\Resources\OrdersDetailResource;
+use App\Models\Menu;
 use App\Models\Order;
 use App\Models\OrderMenu;
 use App\Models\StatusOrder;
@@ -80,5 +81,10 @@ class OrderController extends Controller
     {
         $orderMenu->delete();
         return new OrdersDetailResource($order);
+    }
+
+    public function menu()
+    {
+        return Menu::all();
     }
 }

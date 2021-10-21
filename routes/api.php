@@ -37,6 +37,7 @@ Route::middleware(['auth:api', 'role:admin|waiter'])
         Route::get('/work-shift/{workShift}/order', [Controllers\WorkShiftController::class, 'orders']);
         Route::apiResource('order', Controllers\OrderController::class, ['only' => ['index', 'show']]);
         Route::get('/table', [Controllers\TableController::class, 'index']);
+        Route::get('/menu', [Controllers\OrderController::class, 'menu']);
     });
 
 Route::middleware(['auth:api', 'role:waiter'])->prefix('order')
