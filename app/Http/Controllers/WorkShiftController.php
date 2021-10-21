@@ -52,7 +52,7 @@ class WorkShiftController extends Controller
                 'id_user' => $shiftWorkerRequest->user_id,
                 'status' => 'added'
             ]
-        ])->setStatusCode(201,'Created');
+        ])->setStatusCode(201, 'Created');
     }
 
     public function removeUser(WorkShift $workShift, User $user)
@@ -70,5 +70,10 @@ class WorkShiftController extends Controller
     public function orders(WorkShift $workShift, GetOrdersRequest $getOrdersRequest)
     {
         return new WorkShiftOrdersResource($workShift);
+    }
+
+    public function active()
+    {
+        return new WorkShiftResource(WorkShift::where('active', 1)->first());
     }
 }
