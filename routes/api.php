@@ -33,8 +33,10 @@ Route::middleware(['auth:api', 'role:admin'])
 
 Route::middleware(['auth:api', 'role:admin|waiter'])
     ->group(function () {
+        Route::get('/work-shift/active/get', [Controllers\WorkShiftController::class, 'active']);
         Route::get('/work-shift/{workShift}/order', [Controllers\WorkShiftController::class, 'orders']);
         Route::apiResource('order', Controllers\OrderController::class, ['only' => ['index', 'show']]);
+        Route::get('/table', [Controllers\TableController::class, 'index']);
     });
 
 Route::middleware(['auth:api', 'role:waiter'])->prefix('order')
